@@ -90,3 +90,5 @@ src/
 - `apps/api/uploads/` menyimpan berkas di disk lokal; untuk skala besar gunakan object storage.
 - Jalankan API di belakang reverse proxy yang sama dengan kedua frontend agar `/api` dan
   `/uploads` berada pada origin yang sama.
+
+Dashboard ini dideploy otomatis oleh Vercel setiap ada push ke branch `main`.
