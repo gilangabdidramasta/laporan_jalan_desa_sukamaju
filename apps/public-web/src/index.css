@@ -1,0 +1,330 @@
+@import 'tailwindcss';
+
+@theme {
+  /* ---------- Warna ---------- */
+  --color-surface: #f9f9ff;
+  --color-surface-dim: #d3daef;
+  --color-surface-bright: #f9f9ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f1f3ff;
+  --color-surface-container: #e9edff;
+  --color-surface-container-high: #e1e8fd;
+  --color-surface-container-highest: #dce2f7;
+  --color-surface-variant: #dce2f7;
+  --color-surface-dark: #0f3d2a;
+
+  --color-on-surface: #141b2b;
+  --color-on-surface-variant: #3f493f;
+  --color-inverse-surface: #293040;
+  --color-inverse-on-surface: #edf0ff;
+
+  --color-primary: #00652c;
+  --color-primary-hover: #166534;
+  --color-primary-container: #15803d;
+  --color-primary-soft: #dcfce7;
+  --color-primary-fixed: #95f8a7;
+  --color-primary-fixed-dim: #79db8d;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #d3ffd5;
+
+  --color-secondary: #4c58a6;
+  --color-secondary-container: #9ca8fd;
+  --color-secondary-soft: #e8eaf6;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #2e3a87;
+
+  --color-tertiary: #a12b28;
+  --color-tertiary-container: #c3433d;
+  --color-on-tertiary: #ffffff;
+
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #93000a;
+
+  --color-outline: #6f7a6e;
+  --color-outline-variant: #becabc;
+
+  --color-brand-green: #16a34a;
+  --color-background: #f9f9ff;
+  --color-background-muted: #f8f8f8;
+
+  --color-border-subtle: #e5e7eb;
+  --color-border-strong: #d1d5db;
+
+  /* Warna status laporan */
+  --color-status-pending: #b45309;
+  --color-status-pending-soft: #fef3c7;
+  --color-status-approved: #15803d;
+  --color-status-approved-soft: #dcfce7;
+  --color-status-rejected: #b91c1c;
+  --color-status-rejected-soft: #fee2e2;
+  --color-status-withdrawn: #4b5563;
+  --color-status-withdrawn-soft: #f3f4f6;
+
+  /* ---------- Tipografi ---------- */
+  --font-sans: 'Lato', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Lato', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: 'Merriweather', Georgia, serif;
+  --font-title: 'Lato', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Lato', ui-sans-serif, system-ui, sans-serif;
+  --font-label: 'Lato', ui-sans-serif, system-ui, sans-serif;
+  --font-caption: 'Lato', ui-sans-serif, system-ui, sans-serif;
+  --font-ticket: 'Lato', ui-sans-serif, system-ui, sans-serif;
+
+  --text-display: 48px;
+  --text-display--line-height: 56px;
+  --text-display--letter-spacing: -0.02em;
+  --text-display--font-weight: 700;
+
+  --text-display-mobile: 32px;
+  --text-display-mobile--line-height: 40px;
+  --text-display-mobile--letter-spacing: -0.01em;
+  --text-display-mobile--font-weight: 700;
+
+  --text-headline-lg: 32px;
+  --text-headline-lg--line-height: 42px;
+  --text-headline-lg--font-weight: 700;
+
+  --text-headline-lg-mobile: 24px;
+  --text-headline-lg-mobile--line-height: 32px;
+  --text-headline-lg-mobile--font-weight: 700;
+
+  --text-headline-md: 24px;
+  --text-headline-md--line-height: 32px;
+  --text-headline-md--font-weight: 700;
+
+  --text-headline-sm: 20px;
+  --text-headline-sm--line-height: 28px;
+  --text-headline-sm--font-weight: 700;
+
+  --text-title: 18px;
+  --text-title--line-height: 26px;
+  --text-title--font-weight: 600;
+
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 28px;
+
+  --text-body-md: 16px;
+  --text-body-md--line-height: 24px;
+
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 20px;
+
+  --text-label-md: 13px;
+  --text-label-md--line-height: 18px;
+  --text-label-md--letter-spacing: 0.02em;
+  --text-label-md--font-weight: 600;
+
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-caption--font-weight: 500;
+
+  --text-ticket-code: 14px;
+  --text-ticket-code--line-height: 20px;
+  --text-ticket-code--letter-spacing: 0.04em;
+  --text-ticket-code--font-weight: 700;
+
+  /* ---------- Spacing ---------- */
+  --spacing-margin: 1rem;
+  --spacing-margin-desktop: 1.5rem;
+  --spacing-gutter: 1rem;
+  --spacing-gutter-desktop: 1.5rem;
+  --spacing-space-xs: 0.25rem;
+  --spacing-space-sm: 0.5rem;
+  --spacing-space-md: 1rem;
+  --spacing-space-lg: 1.5rem;
+  --spacing-space-xl: 2rem;
+
+  /* ---------- Radius ---------- */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+
+  /* ---------- Elevasi ---------- */
+  --shadow-card: 0 1px 3px rgb(0 0 0 / 0.08), 0 1px 2px rgb(0 0 0 / 0.04);
+  --shadow-card-hover: 0 4px 12px rgb(0 0 0 / 0.08);
+  --shadow-fab: 0 6px 16px rgb(0 0 0 / 0.18);
+  --shadow-bar: 0 1px 8px rgb(0 0 0 / 0.04);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    font-family: var(--font-body);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
+    font-weight: 700;
+    text-wrap: balance;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button {
+    font-family: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .tabular-nums,
+  .font-ticket {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@utility material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+  user-select: none;
+}
+
+/* ---------- Peta Leaflet ---------- */
+.leaflet-container {
+  font-family: var(--font-body);
+  background: var(--color-surface-container);
+  z-index: 0;
+}
+
+.leaflet-control-attribution {
+  font-size: 10px;
+  background: rgb(255 255 255 / 0.85) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.leaflet-popup-content {
+  margin: 12px 14px;
+  font-family: var(--font-body);
+}
+
+/* Penanda laporan */
+.report-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+}
+
+.report-marker span {
+  color: var(--color-status-rejected);
+  font-size: 32px;
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.35));
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 40;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.report-marker:hover span {
+  transform: scale(1.1);
+}
+
+.center-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.center-marker__dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: var(--color-secondary);
+  box-shadow: 0 0 0 4px rgb(76 88 166 / 0.25);
+}
+
+/* Pin pemilih lokasi */
+.picker-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.picker-marker span {
+  color: var(--color-primary);
+  font-size: 40px;
+  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.3));
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 40;
+}
+
+/* ---------- Animasi ---------- */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.25s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

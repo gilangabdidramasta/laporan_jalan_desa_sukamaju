@@ -1,0 +1,169 @@
+Rancangan alur kerja (*app flow*), fitur utama, dan struktur data untuk **Sistem Pelaporan Jalan Rusak** ini disesuaikan berbasis *stack* **React**, **Tailwind CSS**, **Node.js (Express)**, dan **PostgreSQL**.
+
+---
+
+## Hierarki Peran Pengguna (RBAC)
+
+```
+                       ┌──────────────────────┐
+                       │     SUPER ADMIN      │
+                       └──────────┬───────────┘
+                                  │ Mengelola Akun & Master Data
+                       ┌──────────▼───────────┐
+                       │     ADMIN DINAS      │ (PUPR / Pemda)
+                       └──────────┬───────────┘
+                                  │ Memvalidasi & Menugaskan Work Order
+                       ┌──────────▼───────────┐
+                       │   PETUGAS LAPANGAN   │
+                       └──────────────────────┘
+                                  ▲
+                                  │ Memperbaiki & Mengunggah Bukti
+┌─────────────────────────────────┴──────────────────────────────────┐
+│                         MASYARAKAT (PUBLIK)                         │
+│               Mengajukan Laporan & Memantau Status                 │
+└────────────────────────────────────────────────────────────────────┘
+
+```
+
+---
+
+## Alur Kerja Aplikasi (App Flow)
+
+1. **Inisialisasi Akses (Super Admin Flow)**
+* Super Admin masuk ke sistem melalui portal khusus (`/admin/login`).
+* Super Admin mendaftarkan akun Admin Dinas dan Petugas Lapangan, lalu mengonfigurasi master data wilayah (kecamatan/kelurahan).
+
+
+2. **Pelaporan Jalan Rusak (Masyarakat Flow)**
+* Pelapor membuka situs web utama yang dibangun dengan React & Tailwind CSS (responsif di perangkat seluler tanpa perlu *download* aplikasi).
+* Pelapor mengizinkan akses lokasi browser (HTML5 Geolocation API) untuk otomatis mengisi koordinat GPS (latitude & longitude).
+* Pelapor mengunggah foto kondisi jalan, mengisi rincian deskripsi, dan menekan tombol kirim.
+* Server Node.js menyimpan file gambar, memasukkan data laporan ke PostgreSQL, dan mengembalikan kode tiket unik (contoh: `#REP-20261028-001`).
+
+
+3. **Verifikasi & Penugasan (Admin Dinas Flow)**
+* Admin Dinas melihat aduan masuk di *Dashboard* Manajemen.
+* Admin memvalidasi keabsahan laporan (menolak jika aduan palsu/spam atau menandai duplikat).
+* Jika valid, Admin menentukan tingkat kedaruratan (*Ringan, Sedang, Berat*) dan mendisposisikan laporan ke akun Petugas Lapangan di kecamatan terkait.
+
+
+4. **Eksekusi Lapangan (Petugas Lapangan Flow)**
+* Petugas Lapangan masuk via ponsel, membuka halaman *Work Order*, dan melihat daftar tugas terurut berdasarkan lokasi terdekat.
+* Petugas menuju lokasi, mengubah status laporan menjadi `PROSES`.
+* Setelah pengerjaan selesai, Petugas mengambil foto hasil perbaikan (*after-repair*), mengunggahnya ke sistem, dan mengubah status menjadi `SELESAI`.
+
+
+5. **Transparansi & Rekapitulasi (Publik & Audit Flow)**
+* Pelapor memasukkan kode tiket di halaman pencarian untuk melihat perbandingan foto *before vs after*.
+* Peta interaktif publik memperbarui titik lokasi jalan tersebut dari warna merah (rusak) menjadi hijau (selesai).
+* Super Admin dan Admin Dinas memantau *Audit Log* untuk evaluasi kinerja penanganan aduan.
+
+
+
+---
+
+## Core Features (Fitur Utama per Modul)
+
+| Modul / Peran | Fitur Utama | Fungsi & Deskripsi Teknis |
+| --- | --- | --- |
+| **Super Admin** | **Account Management (CRUD)** | Mengolah data akun Admin Dinas & Petugas Lapangan (Tambah, Edit, Reset Password, Nonaktifkan). |
+|  | **System Audit Log** | Mencatat setiap tindakan sensitif di sistem (siapa yang memverifikasi, mengubah status, atau menghapus data). |
+|  | **Master Data Config** | Mengelola daftar kategori kerusakan, batas wilayah administrative, dan ambang batas durasi penanganan (SLA). |
+| **Admin Dinas** | **Verification & Dispatch Hub** | Panel untuk memfilter aduan masuk, mengubah prioritas, dan menunjuk Petugas Lapangan penanggung jawab. |
+|  | **Heatmap & Analytics Panel** | Visualisasi statistik laporan harian/bulanan serta peta sebaran jalan rusak berbasis Tailwind UI & Leaflet/Mapbox. |
+|  | **Export Report (PDF/Excel)** | Membuat rekapitulasi data pengerjaan infrastruktur secara otomatis untuk laporan dinas harian/bulanan. |
+| **Petugas Lapangan** | **Mobile Work Order List** | Antarmuka *mobile-first* (Tailwind) berisi penugasan perbaikan yang dapat diurutkan berdasarkan jarak terdekat dari lokasi petugas. |
+|  | **Proof of Work Submission** | Form khusus untuk mengunggah foto kondisi *after-repair* beserta catatan teknis penanganan jalan. |
+| **Masyarakat (Publik)** | **Auto Geo-Tagging Form** | Formulir aduan tanpa perlu register/login, memanfaatkan Web Geolocation API untuk akurasi titik lokasi. |
+|  | **Live Ticket Tracker** | Bilah status linier (*Diterima $\rightarrow$ Diverifikasi $\rightarrow$ Dalam Proses $\rightarrow$ Selesai*) dengan pencarian kode tiket. |
+|  | **Public Interactive Map** | Peta interaktif wilayah yang menampilkan sebaran titik jalan rusak dan titik jalan yang berhasil diperbaiki. |
+
+---
+
+## Skema Database PostgreSQL
+
+Sistem menggunakan database relasional PostgreSQL untuk menjamin integritas relasi antar-laporan, pengguna, dan riwayat penanganan.
+
+### 1. Tabel `users`
+
+```sql
+CREATE TYPE user_role AS ENUM ('SUPER_ADMIN', 'ADMIN_DINAS', 'PETUGAS');
+CREATE TYPE user_status AS ENUM ('AKTIF', 'NONAKTIF');
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    nama VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role user_role NOT NULL DEFAULT 'PETUGAS',
+    status user_status NOT NULL DEFAULT 'AKTIF',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+```
+
+### 2. Tabel `reports`
+
+```sql
+CREATE TYPE report_status AS ENUM ('PENDING', 'DIVERIFIKASI', 'PROSES', 'SELESAI', 'DITOLAK');
+CREATE TYPE report_priority AS ENUM ('RINGAN', 'SEDANG', 'BERAT');
+
+CREATE TABLE reports (
+    id SERIAL PRIMARY KEY,
+    ticket_code VARCHAR(25) UNIQUE NOT NULL,
+    foto_kerusakan VARCHAR(255) NOT NULL,
+    latitude DECIMAL(10, 8) NOT NULL,
+    longitude DECIMAL(11, 8) NOT NULL,
+    alamat_deskripsi TEXT NOT NULL,
+    tingkat_kerusakan report_priority DEFAULT 'RINGAN',
+    status report_status DEFAULT 'PENDING',
+    assigned_petugas_id INT REFERENCES users(id) ON DELETE SET NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+```
+
+### 3. Tabel `report_logs` & `audit_logs`
+
+```sql
+CREATE TABLE report_logs (
+    id SERIAL PRIMARY KEY,
+    report_id INT REFERENCES reports(id) ON DELETE CASCADE,
+    updated_by INT REFERENCES users(id) ON DELETE SET NULL,
+    status_sebelum report_status,
+    status_sesudah report_status,
+    foto_pengerjaan VARCHAR(255), -- Diisi saat status 'SELESAI'
+    catatan TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE audit_logs (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) ON DELETE SET NULL,
+    action VARCHAR(100) NOT NULL, -- Contoh: 'CREATE_ADMIN', 'DELETE_REPORT'
+    details TEXT,
+    ip_address VARCHAR(45),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+```
+
+---
+
+## Arsitektur Stack & Teknologi Pendukung
+
+* **Frontend (React + Tailwind CSS)**
+* **Styling & Components:** Tailwind CSS dipadukan dengan `shadcn/ui` atau `Headless UI` untuk membangun *dashboard* yang rapi.
+* **Map Integration:** `react-leaflet` atau `mapbox-gl` untuk menampilkan peta interaktif lokasi kerusakan.
+* **State & Data Fetching:** `@tanstack/react-query` untuk menangani caching dan *real-time fetch* status tiket.
+
+
+* **Backend (Node.js + Express)**
+* **Database ORM:** **Prisma ORM** atau **Sequelize** untuk mempermudah kueri PostgreSQL dan migrasi skema.
+* **Authentication:** `jsonwebtoken` (JWT) dengan *HttpOnly Cookies* untuk sesi Super Admin, Admin, dan Petugas.
+* **Upload Handling:** `multer` untuk memproses *file upload* foto kerusakan dan foto perbaikan (disimpan ke lokal folder server atau Cloudinary/AWS S3).
+
+
+
+Apakah Anda ingin saya buatkan struktur folder lengkap untuk proyek React dan Node.js ini, atau ingin membuatkan draf *script* migrasi database-nya terlebih dahulu?

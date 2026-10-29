@@ -1,0 +1,29 @@
+# Dependensi
+node_modules/
+
+# Hasil build
+dist/
+dist-ssr/
+
+# Rahasia & konfigurasi lokal
+.env
+.env.*
+!.env.example
+
+# Basis data & unggahan lokal
+*.db
+*.db-shm
+*.db-wal
+uploads/
+
+# Log
+*.log
+npm-debug.log*
+
+# Editor & OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.local
