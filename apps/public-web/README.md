@@ -56,3 +56,5 @@ sudah dibuat. Password hanya dapat direset oleh admin desa (tidak ada lupa passw
 
 React 19 · TypeScript · Vite 8 · Tailwind CSS v4 · React Router 7 ·
 TanStack Query 5 · Leaflet / react-leaflet 5
+
+Aplikasi ini dideploy otomatis oleh Vercel setiap ada push ke branch `main`.
